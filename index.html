@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesoría Fiscal - Lic. Ana Karen Casillas</title>
+    <!-- Tailwind CSS para los estilos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Animación suave para la respuesta de la IA */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+    </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-md">
+                        <i class="fas fa-balance-scale text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-slate-800 leading-tight">Lic. Ana Karen Casillas</h1>
+                        <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">Asesoría Fiscal</p>
+                    </div>
+                </div>
+                <a href="https://wa.me/qr/3LGWMMZMNHKHB1" target="_blank" rel="noopener noreferrer" class="hidden md:flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-full text-sm font-semibold transition-colors">
+                    <i class="fab fa-whatsapp text-emerald-400 text-lg"></i> Contactar
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- BANNER DE URGENCIA -->
+    <div class="bg-red-50 border-b border-red-200">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-red-700 text-sm font-medium text-center">
+            <span class="flex items-center gap-2 font-bold">
+                <i class="fas fa-exclamation-triangle animate-pulse text-red-600"></i>
+                ¡FECHA LÍMITE: 30 DE ABRIL!
+            </span>
+            <span>Evita multas y recargos innecesarios. Presenta tu declaración a tiempo.</span>
+        </div>
+    </div>
+
+    <!-- SECCIÓN HERO (Principal) -->
+    <main class="flex-grow">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Columna Izquierda: Texto y Herramienta IA -->
+                <div>
+                    <h2 class="text-4xl sm:text-5xl font-extrabold text-slate-800 leading-tight mb-4">
+                        ¿El SAT te debe <br><span class="text-emerald-600 relative inline-block">dinero?<div class="absolute bottom-1 left-0 w-full h-3 bg-emerald-200 -z-10 transform -rotate-1"></div></span>
+                    </h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-lg">
+                        Presenta tu Declaración Anual sin estrés. Nos encargamos de todo el proceso para asegurar tu cumplimiento y buscar tu saldo a favor.
+                    </p>
+
+                    <!-- SECCIÓN INTERACTIVA IA CON GEMINI API ✨ -->
+                    <div class="bg-white rounded-2xl p-6 border border-emerald-100 shadow-xl shadow-emerald-900/5 relative overflow-hidden">
+                        <div class="absolute -right-6 -top-6 opacity-5 pointer-events-none">
+                            <i class="fas fa-robot text-8xl text-emerald-600"></i>
+                        </div>
+                        
+                        <h3 class="font-bold text-slate-800 text-lg mb-2 flex items-center gap-2 relative z-10">
+                            <i class="fas fa-sparkles text-amber-400"></i> Validador de Deducciones IA
+                        </h3>
+                        <p class="text-sm text-slate-500 mb-4 relative z-10">Escribe un gasto que hayas tenido y mi Inteligencia Artificial te dirá si el SAT te lo puede devolver.</p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3 relative z-10">
+                            <input type="text" id="expenseInput" placeholder="Ej. Lentes de contacto, Nutriólogo..." class="flex-1 text-sm border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 p-3 border outline-none transition-all" autocomplete="off">
+                            <button id="askBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2 whitespace-nowrap">
+                                Preguntar <i class="fas fa-magic"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Loading State -->
+                        <div id="loadingIndicator" class="hidden mt-4 text-sm text-emerald-700 font-medium text-center">
+                            <i class="fas fa-circle-notch fa-spin mr-2"></i> Analizando la ley fiscal vigente...
+                        </div>
+                        
+                        <!-- AI Response Box -->
+                        <div id="aiResponse" class="hidden mt-4 text-sm text-slate-700 bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-inner animate-fade-in font-medium leading-relaxed">
+                            <!-- Response goes here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Tarjeta de Presentación Profesional -->
+                <div class="relative">
+                    <div class="absolute inset-0 bg-emerald-500 rounded-3xl transform rotate-3 scale-105 opacity-20"></div>
+                    <div class="gradient-bg rounded-3xl overflow-hidden shadow-2xl relative z-10">
+                        <!-- Imagen representativa -->
+                        <div class="h-64 bg-slate-800 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80" alt="" class="w-full h-full object-cover opacity-80 mix-blend-overlay">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+                        </div>
+                        
+                        <div class="p-8 text-center -mt-16 relative z-20">
+                            <div class="w-24 h-24 mx-auto bg-white rounded-full flex items-center justify-center shadow-xl mb-4 border-4 border-slate-900">
+                                <i class="fas fa-user-tie text-4xl text-slate-800"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white tracking-wide">Lic. Ana Karen Casillas</h3>
+                            <p class="text-emerald-400 font-medium mb-6">Especialista en Impuestos</p>
+                            
+                            <a href="https://wa.me/qr/3LGWMMZMNHKHB1" target="_blank" rel="noopener noreferrer" class="block w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition duration-300 flex items-center justify-center gap-3 transform hover:-translate-y-1">
+                                <i class="fab fa-whatsapp text-2xl"></i>
+                                ¡Quiero mi devolución!
+                            </a>
+                            <p class="text-xs text-slate-400 mt-4 uppercase tracking-wider font-semibold">
+                                <i class="fas fa-shield-alt mr-1"></i> Trámite 100% Seguro y Confidencial
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- SECCIÓN DE BENEFICIOS / DEDUCCIONES -->
+    <section class="bg-white py-16 border-t border-slate-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-800">Maximizamos tus deducciones</h2>
+                <p class="text-slate-500 mt-2">Revisamos cada detalle para asegurar que recibas lo que te corresponde.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tarjeta 1 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fas fa-stethoscope text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Salud y Bienestar</h3>
+                    <p class="text-sm text-slate-600">Gastos médicos, dentales, hospitalarios, nutrición, psicología y lentes ópticos.</p>
+                </div>
+                <!-- Tarjeta 2 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fas fa-graduation-cap text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Educación</h3>
+                    <p class="text-sm text-slate-600">Colegiaturas desde preescolar hasta bachillerato y transporte escolar obligatorio.</p>
+                </div>
+                <!-- Tarjeta 3 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fas fa-home text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Patrimonio</h3>
+                    <p class="text-sm text-slate-600">Intereses reales pagados por créditos hipotecarios (INFONAVIT, FOVISSSTE o Bancos).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="bg-slate-900 text-slate-400 py-10 text-center">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="w-12 h-12 mx-auto bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-balance-scale text-emerald-500"></i>
+            </div>
+            <h4 class="text-white font-bold text-lg mb-2">Lic. Ana Karen Casillas Sánchez</h4>
+            <p class="text-sm mb-6">Asesoría Fiscal Especializada en México.</p>
+            <p class="text-xs opacity-70">© 2024 Todos los derechos reservados. Este sitio utiliza IA como apoyo informativo, no sustituye la asesoría profesional directa.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Configuración de la API de Gemini
+        const apiKey = ""; // API Key proveída por el entorno
+        const askBtn = document.getElementById('askBtn');
+        const expenseInput = document.getElementById('expenseInput');
+        const aiResponse = document.getElementById('aiResponse');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        // Prompt del sistema para definir la personalidad y reglas de la IA
+        const systemPrompt = `
+        Eres el asistente virtual de la Lic. Ana Karen Casillas, contadora y experta fiscal en México.
+        Tu trabajo es responder rápidamente si un gasto específico que menciona el usuario es DEDUCIBLE DE IMPUESTOS para una Persona Física en México (Declaración Anual del SAT).
+        
+        Reglas:
+        1. Sé súper breve y directo (máximo 2-3 oraciones).
+        2. Menciona si es deducible o no.
+        3. Si es deducible, recuerda brevemente que debe estar pagado con medios electrónicos (tarjeta, transferencia) y pedir factura (CFDI).
+        4. Si no es deducible (ej. súper, mascotas, ropa normal), dilo amablemente.
+        5. Siempre termina con un tono que anime al usuario a contactar a Ana Karen para asegurar que se haga bien su declaración.
+        6. Usa emojis para hacerlo amigable.
+        `;
+
+        // Función para retrasar la ejecución (backoff)
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Función para llamar a la API de Gemini con reintentos
+        async function fetchGeminiResponse(query, retries = 5) {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: query }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            let attempt = 0;
+            const delays = [1000, 2000, 4000, 8000, 16000];
+
+            while (attempt < retries) {
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates[0].content.parts[0].text;
+                } catch (error) {
+                    attempt++;
+                    if (attempt >= retries) {
+                        throw error;
+                    }
+                    await delay(delays[attempt - 1]);
+                }
+            }
+        }
+
+        // Evento del botón para realizar la consulta
+        askBtn.addEventListener('click', async () => {
+            const query = expenseInput.value.trim();
+            if (!query) return;
+
+            // UI Updates
+            expenseInput.disabled = true;
+            askBtn.disabled = true;
+            askBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            loadingIndicator.classList.remove('hidden');
+            aiResponse.classList.add('hidden');
+            
+            try {
+                const responseText = await fetchGeminiResponse(`¿Es deducible este gasto?: ${query}`);
+                
+                // Formatear texto (saltos de línea y negritas)
+                const formattedText = responseText
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                aiResponse.innerHTML = formattedText;
+                aiResponse.classList.remove('hidden', 'border-red-200', 'bg-red-50');
+                aiResponse.classList.add('border-emerald-200', 'bg-emerald-50');
+            } catch (error) {
+                // Manejo de errores
+                aiResponse.innerHTML = `⚠️ <strong class="text-red-600">Uy, mi sistema está saturado revisando declaraciones.</strong><br>Pero no te preocupes, ¡dale clic al botón de WhatsApp y Ana Karen te resuelve esta duda directo!`;
+                aiResponse.classList.remove('hidden', 'border-emerald-200', 'bg-emerald-50');
+                aiResponse.classList.add('border-red-200', 'bg-red-50');
+            } finally {
+                // UI Restaura controles
+                expenseInput.disabled = false;
+                askBtn.disabled = false;
+                askBtn.innerHTML = 'Preguntar <i class="fas fa-magic"></i>';
+                loadingIndicator.classList.add('hidden');
+                expenseInput.focus();
+            }
+        });
+
+        // Permitir usar "Enter" en el input
+        expenseInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                askBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
